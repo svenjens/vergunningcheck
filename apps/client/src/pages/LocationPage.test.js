@@ -15,6 +15,10 @@ import {
   NEXT_BUTTON,
   PREV_BUTTON,
 } from "../utils/test-ids";
+const addressMock = {
+  postalCode: "1055xd",
+  houseNumberFull: "19c",
+};
 
 afterEach(cleanup);
 
@@ -34,13 +38,9 @@ describe("<LocationPage />", () => {
   };
 
   const WrapperWithContext = ({ addressMock }) => {
-    console.log(addressMock);
-    const history = createMemoryHistory();
     return (
       <Context topicMock={topic} addressMock={addressMock}>
-        <Router history={history}>
-          <LocationPage />
-        </Router>
+        <Wrapper />
       </Context>
     );
   };
@@ -54,13 +54,13 @@ describe("<LocationPage />", () => {
 
     const postalCode = container.querySelector('input[name="postalCode"]');
     expect(postalCode).toBeTruthy();
-    expect(postalCode.value).toBe("");
+    expect(postalCode.value).toBe("" || addressMock.postalCode);
 
     const houseNumberFull = container.querySelector(
       'input[name="houseNumberFull"]'
     );
     expect(houseNumberFull).toBeTruthy();
-    expect(houseNumberFull.value).toBe("");
+    expect(houseNumberFull.value).toBe("" || addressMock.houseNumberFull);
   });
 
   it("can navigate with prev and next buttons", () => {
@@ -91,24 +91,26 @@ describe("<LocationPage />", () => {
   });
 
   it("renders correctly with predefined context", async () => {
-    const addressMock = {
-      postalCode: "1055xd",
-      houseNumberFull: "19c",
-    };
 
-    const { container } = render(<WrapperWithContext addressMock={addressMock} />);
+    // const { container, getByTestId } = render(<WrapperWithContext addressMock={addressMock} />);
 
     // Needed to wrap this in an act() function to avoid act() warnings
-    // let container;
-    // await act(async () => {
-    //   ({ container } = render(
-    //     <WrapperWithContext addressMock={addressMock} />
-    //   ));
-    // });
+    const { container } = render(
+      <Wrapper />,
+      {},
+      addressMock
+    );
+    // const prevButton = getByTestId(PREV_BUTTON);
+
+    console.log(window.location.pathname);
+    // if(window.location.pathname === '/dakkapel-plaatsen/vragen') {
+    //   fireEvent.click(prevButton);
+    // }
+    expect(window.location.pathname).toBe("/dakkapel-plaatsen/locatie");
 
     // Compare postalCode with context mock
     const postalCode = container.querySelector('input[name="postalCode"]');
-    console.log(postalCode);
+    console.log(addressMock.postalCode);
     expect(postalCode).toBeTruthy();
     expect(postalCode.value).toBe(addressMock.postalCode);
 

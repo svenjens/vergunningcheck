@@ -117,7 +117,7 @@ describe("<QuestionsPage />", () => {
     });
     await queryByTestId(QUESTION_PAGE);
 
-    // Go even more back to the itnro Page
+    // Go even more back to the intro Page
     await act(async () => {
       fireEvent.click(getByTestId(PREV_BUTTON));
     });

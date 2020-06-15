@@ -17,7 +17,7 @@ import Error from "../components/Error";
 
 const LocationPage = ({ topic, data }) => {
   const { trackEvent } = useMatomo();
-  // const context = useContext(Context);
+  const context = useContext(Context);
   const history = useHistory();
   const [address, setAddress] = useState(null);
   const [errorMessage, setErrorMessage] = useState();
@@ -41,12 +41,10 @@ const LocationPage = ({ topic, data }) => {
         name: address.postalCode.substring(0, 4),
       });
 
-      console.log(address);
-      // context.data.address = address;
+      context.autofillData.address = address;
       history.push(geturl(routes.address, topic));
     }
   };
-  console.log('data', data)
 
   return (
     <Layout>
@@ -70,14 +68,14 @@ const LocationPage = ({ topic, data }) => {
         <LocationFinder
           setAddress={setAddress}
           setErrorMessage={setErrorMessage}
-          postalCode={data.address?.postalCode}
-          houseNumberFull={data.address?.houseNumberFull}
-          houseNumber={data.address?.houseNumberFull}
+          postalCode={data?.postalCode}
+          houseNumberFull={data?.houseNumberFull}
+          houseNumber={data?.houseNumberFull}
           errors={errors}
         />
         <Nav
           onGoToPrev={() => {
-            data.address = address;
+            context.autofillData.address = address;
             history.push(geturl(routes.intro, { slug }));
           }}
           showPrev
