@@ -3,7 +3,7 @@ import { createMemoryHistory } from "history";
 import "@testing-library/jest-dom/extend-expect";
 
 import Router from "../components/Router";
-import { render, fireEvent, cleanup, screen, act } from "../utils/test-utils";
+import { render, fireEvent, waitFor, cleanup, screen, act } from "../utils/test-utils";
 import Context from "../__mocks__/context";
 
 import { topics } from "../config";
@@ -34,9 +34,13 @@ describe("<LocationPage />", () => {
   };
 
   const WrapperWithContext = ({ addressMock }) => {
+    console.log(addressMock);
+    const history = createMemoryHistory();
     return (
       <Context topicMock={topic} addressMock={addressMock}>
-        <Wrapper />
+        <Router history={history}>
+          <LocationPage />
+        </Router>
       </Context>
     );
   };
@@ -83,26 +87,28 @@ describe("<LocationPage />", () => {
     fireEvent.click(getByTestId(NEXT_BUTTON));
 
     expect(window.scrollTo).toBeCalledWith(0, 0);
-    expect(window.location.pathname).toBe("/dakkapel-plaatsen/locatie");
+    expect(window.location.pathname).toBe("/dakkapel-plaatsen/vragen");
   });
 
   it("renders correctly with predefined context", async () => {
-    let container;
-
     const addressMock = {
       postalCode: "1055xd",
       houseNumberFull: "19c",
     };
 
+    const { container } = render(<WrapperWithContext addressMock={addressMock} />);
+
     // Needed to wrap this in an act() function to avoid act() warnings
-    await act(async () => {
-      ({ container } = render(
-        <WrapperWithContext addressMock={addressMock} />
-      ));
-    });
+    // let container;
+    // await act(async () => {
+    //   ({ container } = render(
+    //     <WrapperWithContext addressMock={addressMock} />
+    //   ));
+    // });
 
     // Compare postalCode with context mock
     const postalCode = container.querySelector('input[name="postalCode"]');
+    console.log(postalCode);
     expect(postalCode).toBeTruthy();
     expect(postalCode.value).toBe(addressMock.postalCode);
 
@@ -132,7 +138,7 @@ describe("<LocationPage />", () => {
       houseNumberFull: "19c",
     };
 
-    // Make sure postalcode from userInput is equal to mocks
+    // Make sure postal code from userInput is equal to mocks
     expect(userInput.postalCode).toBe(mocks[0].request.variables.postalCode);
     expect(userInput.postalCode).toBe(postalCode.toLowerCase());
 

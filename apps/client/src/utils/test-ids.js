@@ -1,5 +1,6 @@
 export const LOCATION_FOUND = "location-found";
 
+export const INTRO_PAGE = "address-form";
 export const ADDRESS_PAGE = "address-form";
 
 export const LOADING_TEXT = "loading-text";

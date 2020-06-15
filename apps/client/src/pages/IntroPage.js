@@ -7,6 +7,7 @@ import Form from "../components/Form";
 import Nav from "../components/Nav";
 import Layout from "../components/Layouts/DefaultLayout";
 import { Helmet } from "react-helmet";
+import {INTRO_PAGE} from "../utils/test-ids";
 
 const IntroPage = ({ topic }) => {
   const { text, intro } = topic;
@@ -18,7 +19,7 @@ const IntroPage = ({ topic }) => {
         <title>Inleiding - {text.heading}</title>
       </Helmet>
       <Suspense fallback={<Loading />}>
-        <Intro />
+        <Intro data-testid={INTRO_PAGE}/>
       </Suspense>
       <Form action={geturl(routes.questions, topic)}>
         <Nav showNext />

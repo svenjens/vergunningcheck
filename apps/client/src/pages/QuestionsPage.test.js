@@ -79,7 +79,7 @@ describe("<QuestionsPage />", () => {
     );
   });
 
-  it("navigates correctly between Question Page, Conclusion Page and Address Page", async () => {
+  it("navigates correctly between Question Page, Conclusion Page", async () => {
     const { container, getByTestId, queryByText, queryByTestId } = render(
       <Wrapper />
     );
@@ -117,12 +117,12 @@ describe("<QuestionsPage />", () => {
     });
     await queryByTestId(QUESTION_PAGE);
 
-    // Go even more back to the Address Page
+    // Go even more back to the itnro Page
     await act(async () => {
       fireEvent.click(getByTestId(PREV_BUTTON));
     });
     await queryByTestId(ADDRESS_PAGE);
-    expect(window.location.pathname).toBe(`${baseUrl}/adresgegevens`);
+    expect(window.location.pathname).toBe(`${baseUrl}`);
 
     // Return to the Question Page
     fireEvent.click(getByTestId(NEXT_BUTTON));

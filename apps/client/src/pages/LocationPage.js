@@ -15,9 +15,9 @@ import LocationFinder from "../components/Location/LocationFinder";
 import { Helmet } from "react-helmet";
 import Error from "../components/Error";
 
-const LocationPage = ({ topic }) => {
+const LocationPage = ({ topic, data }) => {
   const { trackEvent } = useMatomo();
-  const context = useContext(Context);
+  // const context = useContext(Context);
   const history = useHistory();
   const [address, setAddress] = useState(null);
   const [errorMessage, setErrorMessage] = useState();
@@ -41,10 +41,12 @@ const LocationPage = ({ topic }) => {
         name: address.postalCode.substring(0, 4),
       });
 
-      context.data.address = address;
+      console.log(address);
+      // context.data.address = address;
       history.push(geturl(routes.address, topic));
     }
   };
+  console.log('data', data)
 
   return (
     <Layout>
@@ -68,14 +70,14 @@ const LocationPage = ({ topic }) => {
         <LocationFinder
           setAddress={setAddress}
           setErrorMessage={setErrorMessage}
-          postalCode={context.data.address?.postalCode}
-          houseNumberFull={context.data.address?.houseNumberFull}
-          houseNumber={context.data.address?.houseNumberFull}
+          postalCode={data.address?.postalCode}
+          houseNumberFull={data.address?.houseNumberFull}
+          houseNumber={data.address?.houseNumberFull}
           errors={errors}
         />
         <Nav
           onGoToPrev={() => {
-            context.address = address;
+            data.address = address;
             history.push(geturl(routes.intro, { slug }));
           }}
           showPrev

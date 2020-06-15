@@ -29,7 +29,8 @@ const withTopic = (Component) => (props) => {
     }
 
     context.topic = topic;
-    return <Component {...props} topic={topic} />;
+    // context.data = 'asddas';
+    return <Component {...props} topic={topic} data={context.data} />;
   }
 
   return <NotFoundPage {...props} />;

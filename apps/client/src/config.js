@@ -23,7 +23,7 @@ export const OLO = {
   location: `${oloHome}Particulier/particulier/home/checken/LocatieWerkzaamheden`,
 };
 
-const topics = [
+let topics = [
   {
     slug: "kappen-of-snoeien",
     redirectToOlo: true,
