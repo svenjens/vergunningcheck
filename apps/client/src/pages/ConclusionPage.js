@@ -170,7 +170,7 @@ const ConclusionPage = ({ topic, checker }) => {
           nextText={needsPermit ? "Naar het omgevingsloket" : "Begin opnieuw"}
           formEnds
         />
-        <DebugDecisionTable checker={checker} />
+        <DebugDecisionTable {...{ topic, checker }} />
       </Form>
     </Layout>
   );

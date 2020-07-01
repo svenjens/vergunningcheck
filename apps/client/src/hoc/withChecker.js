@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-import { SessionContext, CheckerContext } from "../context";
-import withAddress from "./withAddress";
-import getChecker from "../sttr_client";
-import LoadingPage from "../pages/LoadingPage";
+import { CheckerContext, SessionContext } from "../context";
 import ErrorPage from "../pages/ErrorPage";
+import LoadingPage from "../pages/LoadingPage";
+import getChecker from "../sttr_client";
+import withAddress from "./withAddress";
 
 const dir =
   process.env.REACT_APP_STTR_ENV === "production" ? "PROD" : "STAGING";
@@ -29,10 +29,10 @@ const withChecker = (Component) =>
           .then((response) => response.json())
           .then((json) => {
             const checker = getChecker(json);
-            if (sessionContext.answers) {
-              checker.setQuestionAnswers(sessionContext.answers);
+            if (sessionContext[topic.slug]?.answers) {
+              checker.setQuestionAnswers(sessionContext[topic.slug].answers);
               // In case of reload, rewind to the current question
-              checker.rewindTo(sessionContext.questionIndex);
+              checker.rewindTo(sessionContext[topic.slug].questionIndex);
             } else {
               checker.next();
             }

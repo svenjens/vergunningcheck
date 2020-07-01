@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, createContext } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 
 const session = JSON.parse(sessionStorage.getItem("sessionData") as string);
 const SessionContext = createContext({});
@@ -7,13 +7,7 @@ const defaultCheckerValue = {
   checker: null,
   topic: null,
 };
-const defaultSessionValues = session
-  ? session
-  : {
-      address: null,
-      answers: null,
-      questionIndex: 0,
-    };
+const defaultSessionValues = session ? session : {};
 
 const reducer = (data: object, newData: object) => {
   if (newData === null) {

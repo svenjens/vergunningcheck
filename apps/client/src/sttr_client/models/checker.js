@@ -1,4 +1,4 @@
-import { collectionOfType, uniqueFilter, isObject } from "../../utils";
+import { collectionOfType, isObject, uniqueFilter } from "../../utils";
 
 /**
  * Step checker class for quiz
@@ -34,6 +34,10 @@ class Checker {
      * @type {Question[]}
      */
     this._stack = [];
+
+    this._autofilled = false;
+
+    window.checker = this; // XXX
   }
 
   /**

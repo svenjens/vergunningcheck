@@ -8,15 +8,16 @@ import withTopic from "./withTopic";
 const withAddress = (Component) =>
   withTopic(({ ...rest }) => {
     const sessionContext = useContext(SessionContext);
-    const sessionAddress = sessionContext.address || {};
     const { topic } = rest;
-    if (!sessionAddress[topic.slug]) {
+
+    const address = sessionContext[topic.slug]?.address;
+
+    if (!address) {
       console.warn("No address found, redirecting to location page");
-      return <Redirect to={geturl(routes.location, { slug: topic.slug })} />;
+      return <Redirect to={geturl(routes.location, topic)} />;
     }
-    return (
-      <Component address={sessionAddress[topic.slug]} {...rest}></Component>
-    );
+
+    return <Component {...{ ...rest, address }} />;
   });
 
 export default withAddress;

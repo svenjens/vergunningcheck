@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { SessionContext, CheckerContext } from "../context";
+
+import { CheckerContext, SessionContext } from "../context";
 
 export default ({
   children,
@@ -20,15 +21,11 @@ export default ({
     checkerContext.topic = topicMock;
   }
 
-  if (addressMock) {
-    sessionContext.address = {
-      [topicMock.slug]: addressMock,
-    };
-  }
+  sessionContext[topicMock] = {
+    address: addressMock,
+    questionIndex,
+  };
 
-  if (questionIndex) {
-    sessionContext.questionIndex = questionIndex;
-  }
   sessionContext.setSessionData = setSessionData;
   return children;
 };

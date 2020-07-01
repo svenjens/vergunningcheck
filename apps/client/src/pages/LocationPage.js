@@ -1,19 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
+import { Heading, Paragraph } from "@datapunt/asc-ui";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import withTopic from "../hoc/withTopic";
-import { Paragraph, Heading } from "@datapunt/asc-ui";
 
-import { SessionContext, CheckerContext } from "../context";
-import { geturl, routes } from "../routes";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
-
-import Layout from "../components/Layouts/DefaultLayout";
-import Form from "../components/Form";
-import Nav from "../components/Nav";
-import LocationFinder from "../components/Location/LocationFinder";
-import { Helmet } from "react-helmet";
 import Error from "../components/Error";
+import Form from "../components/Form";
+import Layout from "../components/Layouts/DefaultLayout";
+import LocationFinder from "../components/Location/LocationFinder";
+import Nav from "../components/Nav";
+import { CheckerContext, SessionContext } from "../context";
+import withTopic from "../hoc/withTopic";
+import { geturl, routes } from "../routes";
 
 const LocationPage = ({ topic }) => {
   const { trackEvent } = useMatomo();
@@ -25,7 +24,7 @@ const LocationPage = ({ topic }) => {
   const [errorMessage, setErrorMessage] = useState();
   const { clearError, errors, register, unregister, handleSubmit } = useForm();
   const { slug, text } = topic;
-  const sessionAddress = sessionContext.address?.[slug] || {};
+  const sessionAddress = sessionContext[slug]?.address || {};
 
   useEffect(() => {
     if (!address && !errorMessage) {
@@ -44,24 +43,22 @@ const LocationPage = ({ topic }) => {
         name: address.postalCode.substring(0, 4),
       });
 
-      // Load given answers from sessionContext
-      let answers = sessionContext.answers;
-
       // Reset the checker and answers when the address is changed
-      if (answers && sessionAddress.id !== address.id) {
+      if (sessionContext[slug]?.answers && sessionAddress.id !== address.id) {
         checkerContext.checker = null;
-        answers = null;
       }
 
       sessionContext.setSessionData({
-        address: { ...sessionContext.address, [slug]: address },
-        answers, // Either null or filled with given answers
-        questionIndex: 0, // Reset to 0 to start with the first question
+        [slug]: {
+          address,
+          // answers, // Either null or filled with given answers
+          questionIndex: 0, // Reset to 0 to start with the first question
+        },
       });
       if (focus) {
         document.activeElement.blur();
       } else {
-        history.push(geturl(routes.address, { slug }));
+        history.push(geturl(routes.address, topic));
       }
     }
   };
@@ -97,7 +94,9 @@ const LocationPage = ({ topic }) => {
         <Nav
           onGoToPrev={() => {
             sessionContext.setSessionData({
-              address: { ...sessionContext.address, [slug]: address },
+              [slug]: {
+                address,
+              },
             });
             history.push(geturl(routes.intro, { slug }));
           }}
