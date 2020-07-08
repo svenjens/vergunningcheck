@@ -14,11 +14,12 @@ const QuestionsPage = ({ topic, checker }) => {
   const sessionContext = useContext(SessionContext);
   const params = useParams();
   const history = useHistory();
-  const { question: questionSlug } = params;
   const [question, setQuestion] = useState(
     checker.stack[checker.stack.length - 1]
   );
 
+  const { question: questionSlug } = params;
+  const { slug } = topic;
   const currSlug = getslug(question.text);
 
   // Update URL when it's not set (first question) and when URL differs from the current question
@@ -26,7 +27,7 @@ const QuestionsPage = ({ topic, checker }) => {
     return (
       <Redirect
         to={geturl(routes.questions, {
-          slug: topic.slug,
+          slug,
           question: currSlug,
         })}
       />
@@ -54,7 +55,10 @@ const QuestionsPage = ({ topic, checker }) => {
 
     // Store all answers in the session context
     sessionContext.setSessionData({
-      answers: checker.getQuestionAnswers(),
+      [slug]: {
+        ...sessionContext[slug],
+        answers: checker.getQuestionAnswers(),
+      },
     });
 
     // Load next question
@@ -73,7 +77,10 @@ const QuestionsPage = ({ topic, checker }) => {
       if (next) {
         // Store the new questionIndex in the session
         sessionContext.setSessionData({
-          questionIndex: sessionContext.questionIndex + 1,
+          [slug]: {
+            ...sessionContext[slug],
+            questionIndex: sessionContext.questionIndex + 1,
+          },
         });
 
         // Go to Next question
@@ -82,7 +89,7 @@ const QuestionsPage = ({ topic, checker }) => {
         // Change the URL to the new question
         history.push(
           geturl(routes.questions, {
-            slug: topic.slug,
+            slug,
             question: getslug(next.text),
           })
         );
@@ -109,7 +116,7 @@ const QuestionsPage = ({ topic, checker }) => {
       // Change the URL to the new question
       history.push(
         geturl(routes.questions, {
-          slug: topic.slug,
+          slug,
           question: getslug(prev.text),
         })
       );
