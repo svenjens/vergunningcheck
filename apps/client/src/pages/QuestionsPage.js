@@ -54,12 +54,12 @@ const QuestionsPage = ({ topic, checker }) => {
     }
 
     // Store all answers in the session context
-    sessionContext.setSessionData({
-      [slug]: {
-        ...sessionContext[slug],
+    sessionContext.setSessionData([
+      slug,
+      {
         answers: checker.getQuestionAnswers(),
       },
-    });
+    ]);
 
     // Load next question
     const next = checker.next();
@@ -76,12 +76,12 @@ const QuestionsPage = ({ topic, checker }) => {
       // Load the next question or go to the Result Page
       if (next) {
         // Store the new questionIndex in the session
-        sessionContext.setSessionData({
-          [slug]: {
-            ...sessionContext[slug],
-            questionIndex: sessionContext.questionIndex + 1,
+        sessionContext.setSessionData([
+          slug,
+          {
+            questionIndex: sessionContext[slug].questionIndex + 1,
           },
-        });
+        ]);
 
         // Go to Next question
         setQuestion(next);
@@ -106,9 +106,12 @@ const QuestionsPage = ({ topic, checker }) => {
       const prev = checker.previous();
 
       // Store the new questionIndex in the session
-      sessionContext.setSessionData({
-        questionIndex: sessionContext.questionIndex - 1,
-      });
+      sessionContext.setSessionData([
+        slug,
+        {
+          questionIndex: sessionContext[slug].questionIndex - 1,
+        },
+      ]);
 
       // Go to Prev question
       setQuestion(prev);
@@ -150,7 +153,7 @@ const QuestionsPage = ({ topic, checker }) => {
         showPrev
       />
 
-      <DebugDecisionTable checker={checker} />
+      <DebugDecisionTable {...{ topic, checker }} />
     </Layout>
   );
 };

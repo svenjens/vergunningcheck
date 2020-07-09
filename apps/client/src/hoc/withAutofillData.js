@@ -12,7 +12,7 @@ const withAutofillData = (Component) =>
     const history = useHistory();
     const sessionContext = useContext(SessionContext);
     const { topic, checker } = props;
-    const address = sessionContext.address?.[topic.slug];
+    const address = sessionContext[topic.slug]?.address;
 
     // Only autofill data if this topic is an STTR-flow
     if (topic.sttrFile) {
@@ -21,14 +21,14 @@ const withAutofillData = (Component) =>
       if (address) {
         checker.autofill(autofillResolvers, { address });
       }
-      const dataNeed = checker.getAutofillDataNeeds(autofillMap, true).shift();
+      const dataNeed = checker.getAutofillDataNeeds(autofillMap, true)[0];
 
       if (dataNeed) {
         console.warn(
           `Data not provided (${dataNeed}), send browser back to data-need provider.`
         );
         // The following line gives a client-side console error but it works.
-        const route = autofillRoutes[dataNeed].shift();
+        const route = autofillRoutes[dataNeed][0];
         history.replace(geturl(route, topic));
         return null;
       } else {
