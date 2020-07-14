@@ -1,33 +1,126 @@
 /* eslint-disable */
 import React, { useContext } from "react";
+import styled from "styled-components";
 
 import { SessionContext } from "../context";
+import { removeQuotes } from "../utils";
 import HiddenDebugInfo from "./HiddenDebugInfo";
+import { booleanOptions } from "./Question";
 
 const QuestionSummary = ({ question: { prio, text, autofill } }) =>
   `${prio}: ${autofill ? ` [${autofill}]` : ""} ${text}`;
 
-const Answer = ({ question: { answer } }) => (
-  <>
-    {answer === null ? (
-      "NULL"
-    ) : (
-      <b>{answer !== undefined ? answer.toString() : "..."}</b>
-    )}
-  </>
-);
+const Answer = ({ question: { type, answer } }) => {
+  if (answer === null) {
+    return "NULL???";
+  }
+  if (answer === undefined) {
+    return "???";
+  }
+  if (type === "boolean") {
+    return booleanOptions.find((option) => option.value === answer).label;
+  }
+  return answer.toString();
+};
+
+const Table = styled.table`
+  th {
+    text-align: left;
+  }
+  td,
+  th {
+    padding: 4px 8px;
+  }
+  tfoot td {
+    position: relative;
+  }
+  tfoot td div {
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: bottom left;
+    top: -1em;
+  }
+`;
+const AnswerCell = styled.td``;
 
 export default ({ checker, topic }) => {
   const sessionContext = useContext(SessionContext);
   const { slug } = topic;
   const decisionId = "dummy";
+  const topicSession = sessionContext[slug] || {};
 
   if (!checker || !checker.permits) return <></>;
   const allQuestions = checker._getAllQuestions();
   const autofilled = allQuestions.filter((q) => q.autofill);
+  const getDecisionsFromPermit = (permit) =>
+    permit.getDecisionById("dummy")._inputs;
+
+  const getRulesFromPermit = (permit) =>
+    getDecisionsFromPermit(permit)
+      .flatMap((decision) => decision._rules)
+      .filter((rule) => rule._outputValue !== '"no hit"');
 
   return (
     <HiddenDebugInfo>
+      {checker.permits.map((permit) => (
+        <>
+          <h1>{permit.name}</h1>
+          {JSON.stringify(getRulesFromPermit(permit))}
+          <Table cellPadding="0" cellSpacing="0">
+            <thead>
+              <tr>
+                <th>Vraag gegevens</th>
+                <th>Antwoord</th>
+              </tr>
+            </thead>
+            <tbody>
+              {getRulesFromPermit(permit).map((rule) => (
+                <th>{removeQuotes(rule._outputValue)}</th>
+              ))}
+              {getDecisionsFromPermit(permit).map((question) => (
+                // <tr
+                //   style={{
+                //     backgroundColor:
+                //       checker.stack[sessionContext[slug].questionIndex] === question
+                //         ? "#ccc"
+                //         : question.answer === undefined
+                //         ? "white"
+                //         : "#eee",
+                //   }}
+                // >
+                //   <td>
+                //     <div>{question.text}</div>
+                //     {question.autofill && (
+                //       <div>Autofill bron: {question.autofill}</div>
+                //     )}
+                //     {question.uuid && <div>Herbruikbaar id: {question.uuid}</div>}
+                //     <div>Volgorde: {question.prio}</div>
+                //   </td>
+                //   <AnswerCell>
+                //     <Answer question={question} />
+                //   </AnswerCell>
+
+                //   {/* question.rules.map(...) */}
+                //   <AnswerCell>Ja</AnswerCell>
+                //   <AnswerCell>Ja</AnswerCell>
+                //   <AnswerCell>Ja</AnswerCell>
+                //   <AnswerCell>Ja</AnswerCell>
+                // </tr>
+                <br />
+              ))}
+            </tbody>
+            <tfoot>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <div>Vergunninplicht</div>
+              </td>
+            </tfoot>
+          </Table>
+        </>
+      ))}
+
       <div style={{ display: "block" }}>
         {autofilled.filter((q) => q.autofill).length > 0 && (
           <>
@@ -54,7 +147,7 @@ export default ({ checker, topic }) => {
                 key={`question-${q.id}-${i}`}
                 style={{
                   fontWeight:
-                    checker.stack[sessionContext[slug].questionIndex] === q
+                    checker.stack[topicSession.questionIndex] === q
                       ? "bold"
                       : "normal",
                 }}
