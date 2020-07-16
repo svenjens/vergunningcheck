@@ -1,8 +1,12 @@
-import { Button, Heading, Paragraph } from "@datapunt/asc-ui";
+import { Button, Paragraph } from "@datapunt/asc-ui";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet";
 
 import Question, { booleanOptions } from "../checker/components/Question";
+import {
+  StepByStepItem,
+  StepByStepNavigation,
+} from "../checker/components/StepByStepNavigation";
 import DebugDecisionTable from "../components/DebugDecisionTable";
 import Layout from "../components/Layouts/DefaultLayout";
 import { SessionContext } from "../context";
@@ -104,45 +108,63 @@ const WrapperPage = ({ checker, topic: { slug } }) => {
       <Helmet>
         <title>Wrapper Page</title>
       </Helmet>
-      {checker.stack.map((q, i) => {
-        if (q === checker.stack[sessionContext[slug].questionIndex]) {
-          return (
-            <Question
-              question={q}
-              key={`question-${q.id}-${i}`}
-              onSubmit={onQuestionNext}
-              onGoToPrev={onQuestionPrev}
-              showPrev
-              showNext
-            />
-          );
-        } else {
-          let answer;
-          if (q.options) {
-            answer = q.answer;
-          } else {
-            const responseObj = booleanOptions.find(
-              (o) => o.value === q.answer
+      <StepByStepNavigation
+        customSize
+        disabledTextColor="inherit"
+        doneTextColor="inherit"
+        highlightActive
+        style={{ margin: "40px 0" }}
+      >
+        <StepByStepItem heading="Vragen" largeCircle />
+        {checker.stack.map((q, i) => {
+          if (q === checker.stack[sessionContext[slug].questionIndex]) {
+            return (
+              <StepByStepItem
+                active={sessionContext[slug].questionIndex === i}
+                checked={sessionContext[slug].questionIndex > 1}
+                heading={q.text}
+              >
+                <Question
+                  question={q}
+                  key={`question-${q.id}-${i}`}
+                  onSubmit={onQuestionNext}
+                  onGoToPrev={onQuestionPrev}
+                  showPrev
+                  showNext
+                />
+              </StepByStepItem>
             );
-            answer = responseObj?.label;
+          } else {
+            let answer;
+            if (q.options) {
+              answer = q.answer;
+            } else {
+              const responseObj = booleanOptions.find(
+                (o) => o.value === q.answer
+              );
+              answer = responseObj?.label;
+            }
+            return (
+              <StepByStepItem
+                active={sessionContext[slug].questionIndex === i}
+                checked={sessionContext[slug].questionIndex > 1}
+                heading={q.text}
+              >
+                <Paragraph>
+                  {answer?.replace(/['"]+/g, "")}
+                  <Button
+                    style={{ marginLeft: 20 }}
+                    onClick={() => onGoToQuestion(i)}
+                    variant="textButton"
+                  >
+                    Wijzig
+                  </Button>
+                </Paragraph>
+              </StepByStepItem>
+            );
           }
-          return (
-            <>
-              <Heading forwardedAs="h3">{q.text}</Heading>
-              <Paragraph>
-                {answer?.replace(/['"]+/g, "")}
-                <Button
-                  style={{ marginLeft: 20 }}
-                  onClick={() => onGoToQuestion(i)}
-                  variant="textButton"
-                >
-                  Wijzig
-                </Button>
-              </Paragraph>
-            </>
-          );
-        }
-      })}
+        })}
+      </StepByStepNavigation>
       <DebugDecisionTable checker={checker} />
     </Layout>
   );
