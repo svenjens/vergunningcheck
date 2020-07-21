@@ -2,7 +2,7 @@
 
 This application allows residents of Gemeente Amsterdam to easily see if they need a permit (vergunning) for a construction activity for their specific building. For various activities, like installing a window or solar panels on the roof or extending the house, we ask a number of questions about the location and plans. This leads to an outcome, either permit-free or a permit obligation, where it is clear which questions lead to this conclusion. This tool can therefore be used to see how in a specific location you could carry out a construction activity without the requirement of a permit.
 
-Main reason to start development on this application was the Dutch [Digitaal Stelsel Omgevingswet (DSO)](https://nl.wikipedia.org/wiki/Omgevingswet). Before the lay is actually implemented the city of Amsterdam wanted to start using new tools provided by [omgevingswetportaal.nl](https://www.omgevingswetportaal.nl) and [aandeslagmetdeomgevingswet.nl](https://aandeslagmetdeomgevingswet.nl/) like [Standaard toepasbare regels (STTR)](https://aandeslagmetdeomgevingswet.nl/digitaal-stelsel/aansluiten/standaarden/sttr-imtr/).
+Main reason to start development on this application was the Dutch [Digitaal Stelsel Omgevingswet (DSO)](https://nl.wikipedia.org/wiki/Omgevingswet). Before the law is actually implemented the city of Amsterdam wanted to start using new tools provided by [omgevingswetportaal.nl](https://www.omgevingswetportaal.nl) and [aandeslagmetdeomgevingswet.nl](https://aandeslagmetdeomgevingswet.nl/) like [Standaard toepasbare regels (STTR)](https://aandeslagmetdeomgevingswet.nl/digitaal-stelsel/aansluiten/standaarden/sttr-imtr/).
 
 Our application supports:
 
